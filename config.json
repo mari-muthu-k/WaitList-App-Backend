@@ -1,0 +1,18 @@
+{
+    "production":false,
+    "OpenApiUrl":false,
+    "appDomain":"http://localhost",
+    "authDomains":["http://localhost:3000","http://127.0.0.1:3000"],
+    "mysql":{
+        "name":"iphone_waitlist",
+        "userName":"root",
+        "password":"",
+        "url":"localhost:3306"
+    },
+    "mail":{
+        "userName":"testUser",
+        "password":"testPassword",
+        "from":"verify@test.com",
+        "url":"email.test.com"
+    }
+}

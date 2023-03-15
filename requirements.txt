@@ -1,0 +1,8 @@
+pydantic
+fastapi
+uvicorn
+jinja2
+starlette_session
+fastapi-mail
+sqlalchemy
+pymysql

@@ -1,1 +1,1 @@
-# iPhone-WaitList-App
+# WaitList-App-Backend
