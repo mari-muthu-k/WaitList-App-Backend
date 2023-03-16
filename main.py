@@ -9,6 +9,7 @@ from fastapi.middleware.cors import CORSMiddleware
 from starlette_session import SessionMiddleware
 
 from controller import http
+from router import user,admin
 
 app = FastAPI() if config.LIST_ENDPOINTS else FastAPI(openapi_url="")
 
@@ -34,6 +35,5 @@ app.add_middleware(
     allow_headers=["*"]
     )
 
-@app.get("/")
-async def default(req:Request,res:Response):
-    return http.HTTP_RESPONSE(statusCode=200).returnCustomMessage(res, "Hello world !")
+app.include_router(user.router,prefix="/api")
+app.include_router(admin.router,prefix="/api/admin")

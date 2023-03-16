@@ -1,6 +1,6 @@
 {
     "production":false,
-    "listAPI":false, 
+    "listAPI":true, 
     "appDomain":"http://localhost",
     "authDomains":["http://localhost:3000","http://127.0.0.1:3000"],
     "mysql":{
