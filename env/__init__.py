@@ -25,9 +25,11 @@ class appConfig:
     COOKIE_SAME_SITE   = "strict"
     COOKIE_DOMAIN      =  None 
     
+    CONNECT_MAIL = os.getenv("CONNECT_MAIL") or configJSON['mail']['connectMail']
     MAIL_USERNAME = os.getenv("MAIL_USERNAME") or configJSON['mail']['userName']
     MAIL_PASSWORD = os.getenv("MAIL_PASSWORD") or configJSON['mail']['password']
     MAIL_FROM     = os.getenv("MAIL_FROM") or configJSON['mail']['from']
     MAIL_SERVER   = os.getenv("MAIL_SERVER") or configJSON['mail']['url']
+    MAIL_PORT     = os.getenv("MAIL_PORT") or configJSON['mail']['portNUmber']
     
-    LIST_ENDPOINTS = configJSON['OpenApiUrl']
+    LIST_ENDPOINTS = configJSON['listAPI']

@@ -1,6 +1,6 @@
 {
     "production":false,
-    "OpenApiUrl":false,
+    "listAPI":false, 
     "appDomain":"http://localhost",
     "authDomains":["http://localhost:3000","http://127.0.0.1:3000"],
     "mysql":{
@@ -10,9 +10,11 @@
         "url":"localhost:3306"
     },
     "mail":{
+        "connectMail":false,
         "userName":"testUser",
         "password":"testPassword",
         "from":"verify@test.com",
-        "url":"email.test.com"
+        "url":"email.test.com",
+        "portNUmber":587
     }
 }
