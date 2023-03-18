@@ -23,9 +23,12 @@ class MyStatus(BaseModel):
 
 class AdminLogin(BaseModel):
     email : EmailStr
-    password : str 
+    password : str = Field(min_length=8)
 
 class UpdateUser(BaseModel):
     name  : Optional[str] 
     email : Optional[EmailStr ]
-    position : Optional[int] 
+    position : Optional[int]
+
+class DeleteUser(BaseModel):
+    id : int

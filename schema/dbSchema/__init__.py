@@ -12,6 +12,7 @@ class Customer(Base):
     email = Column(String(255))
     ref_link = Column(String(50),default=None,unique=True)
     coupon = Column(String(50),default=None,unique=True)
+    active = Column(Boolean,default=True)
     
 class Referral(Base):
     __tablename__ = "referral"
@@ -27,6 +28,7 @@ class Position(Base):
     customer_id = Column(Integer,ForeignKey("customer.id"))
     position = Column(Integer,default=0)
     admin_priority = Column(Boolean,default=False)
+    ref_score  = Column(Integer,default=0)
     created_at = Column(DateTime, default=datetime.now())
 
 class Admin(Base):

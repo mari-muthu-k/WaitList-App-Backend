@@ -37,6 +37,7 @@ app.add_middleware(
     )
 
 app.include_router(user.router,prefix="/api")
+# TODO : add admin auth dependency
 app.include_router(admin.router,prefix="/api/admin")
 
 @app.exception_handler(customException)
