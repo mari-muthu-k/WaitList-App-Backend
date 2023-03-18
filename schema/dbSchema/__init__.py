@@ -10,8 +10,8 @@ class Customer(Base):
     id = Column(Integer, primary_key=True, index=True)
     name  = Column(String(255))
     email = Column(String(255))
-    ref_link = Column(String(50),default=None)
-    coupon = Column(String(50),default=None)
+    ref_link = Column(String(50),default=None,unique=True)
+    coupon = Column(String(50),default=None,unique=True)
     
 class Referral(Base):
     __tablename__ = "referral"

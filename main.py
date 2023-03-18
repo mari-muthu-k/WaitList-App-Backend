@@ -10,6 +10,7 @@ from starlette_session import SessionMiddleware
 
 from controller import http
 from router import user,admin
+from exception import customException
 
 app = FastAPI() if config.LIST_ENDPOINTS else FastAPI(openapi_url="")
 
@@ -37,3 +38,10 @@ app.add_middleware(
 
 app.include_router(user.router,prefix="/api")
 app.include_router(admin.router,prefix="/api/admin")
+
+@app.exception_handler(customException)
+async def exception_handler(request: Request, exc: customException):
+    return JSONResponse(
+        status_code=exc.status_code,
+        content={"message":exc.message},
+    )

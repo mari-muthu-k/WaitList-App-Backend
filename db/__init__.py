@@ -8,11 +8,11 @@ from env import appConfig as db
 
 #MySQL connection
 engine=create_engine("mysql+pymysql://"+db.MYSQL_USERNAME+":"+(db.MYSQL_PASS if db.MYSQL_PASS != None else "")+"@"+db.MYSQL_URL+"/"+db.MYSQL_DBNAME)
-sessionLocal=sessionmaker(bind=engine,autocommit=False)
+session =sessionmaker(bind=engine,autocommit=False)
 Base=declarative_base()
 
 def get_db():
-    db = sessionLocal()
+    db = session()
     try:
         yield db
     finally:

@@ -13,6 +13,7 @@ http_codes = {
                 406:'Not Acceptable',
                 409:'Conflict',
                 429:'Too many requests',
+                500:'Internal server error',
                 501:'Not Implemented',
                 502:'Bad Gateway',
                 503:'Service Unavailable'
