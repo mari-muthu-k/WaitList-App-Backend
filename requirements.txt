@@ -6,3 +6,4 @@ starlette_session
 fastapi-mail
 sqlalchemy
 pymysql
+passlib

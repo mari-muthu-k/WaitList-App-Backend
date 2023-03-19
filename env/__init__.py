@@ -33,3 +33,5 @@ class appConfig:
     MAIL_PORT     = os.getenv("MAIL_PORT") or configJSON['mail']['portNUmber']
     
     LIST_ENDPOINTS = configJSON['listAPI']
+    
+    DEFAULT_POSITION_COUNT = 99
