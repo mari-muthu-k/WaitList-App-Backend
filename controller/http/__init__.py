@@ -30,4 +30,11 @@ class HTTP_RESPONSE:
     def returnCustomMessage(self,response,cMessage):
         response.status_code = self.status_code
         return cMessage
+    
+    def returnErrorMessage(self,response,err):
+        response.status_code = self.status_code
+        return {
+            "message" : err
+        }
+    
         

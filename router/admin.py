@@ -20,23 +20,23 @@ async def login(req:Request,res:Response,loginData:formSchema.AdminLogin,connect
             return HTTP_RESPONSE(statusCode=401).returnCustomMessage(res,"wrong email or password")
     return HTTP_RESPONSE(statusCode=200).returnMessage(res) if status else HTTP_RESPONSE(statusCode=500).returnCustomMessage(res,"something went wrong, please try again")
 
-@router.get("/listAll")
+@router.post("/listAll")
 async def listAll(req:Request,res:Response):
     return True
 
-@router.post("/getUser")
-async def getUser(req:Request,res:Response,reqData:formSchema.MyStatus,connectedDB:Session=Depends(get_db)):
-    resultData,status = await CustomerLogics.getUserData(reqData.email,connectedDB)
-    if status:
-        if resultData == None:
-            return HTTP_RESPONSE(statusCode=404).returnCustomMessage(res,{
-            "data" : "email doesn't exist"
-            })
-        else:
-            return HTTP_RESPONSE(statusCode=200).returnCustomMessage(res,{
-            "data" : resultData
-            })
-    return HTTP_RESPONSE(statusCode=500).returnCustomMessage(res,"Something went wrong")
+# @router.post("/getUser")
+# async def getUser(req:Request,res:Response,reqData:formSchema.MyStatus,connectedDB:Session=Depends(get_db)):
+#     resultData,status = await CustomerLogics.getUserData(reqData.email,connectedDB)
+#     if status:
+#         if resultData == None:
+#             return HTTP_RESPONSE(statusCode=404).returnCustomMessage(res,{
+#             "data" : "email doesn't exist"
+#             })
+#         else:
+#             return HTTP_RESPONSE(statusCode=200).returnCustomMessage(res,{
+#             "data" : resultData
+#             })
+#     return HTTP_RESPONSE(statusCode=500).returnCustomMessage(res,"Something went wrong")
 
 @router.post("/updateUser")
 async def updateUser(req:Request,res:Response):
