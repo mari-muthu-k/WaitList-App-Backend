@@ -17,6 +17,7 @@ class CreateUser(BaseModel):
     name: str = Field(min_length=1)
     email: EmailStr
     referral_link: str = None
+    admin_created : bool = False
         
 class MyStatus(BaseModel):
     email : EmailStr

@@ -1,10 +1,10 @@
 import asyncio
 
-from schema.dbSchema import Customer,Position
+from schema.dbSchema import Customer,Position,Referral
 from helpers import randomString
 from env import appConfig
 from sqlalchemy import select,update,delete,func,exc
-
+from controller import email
 class CustomerLogics():
     def createUser(userData, connectedDB) -> int:
         try:
@@ -26,7 +26,12 @@ class CustomerLogics():
             connectedDB.flush() # synchronize the session state with the database
             connectedDB.refresh(cRow) # update the cRow
         
-            # TODO : update ref_by user's position if referral_link available in data
+            #Run referral logics
+            if userData.referral_link :
+                nloop = asyncio.new_event_loop()
+                asyncio.set_event_loop(nloop)
+                nloop.run_until_complete(ReferralLogics.rewardReferrer(userData.referral_link,cRow.id,connectedDB))
+                nloop.close()
         
             totalCount,err = PositionLogics.getPositionCount(connectedDB)
             if totalCount < 0 or err != None:
@@ -34,7 +39,8 @@ class CustomerLogics():
         
             pRow = Position(
             customer_id=cRow.id, #Last inserted id
-            position=totalCount+appConfig.DEFAULT_POSITION_COUNT # To maintain the default 99 position for new positions
+            position=totalCount+appConfig.DEFAULT_POSITION_COUNT, # To maintain the default 99 position for new positions
+            admin_priority = userData.admin_created
             )
         
             connectedDB.add(pRow)
@@ -77,9 +83,28 @@ class CustomerLogics():
             print("MarkCustomerAsInActive : ",e)
             return -1,e
     
-            
-
-class PositionLogics():
+    async def getCusByRefLink(refLink,connectedDB)->dict:
+        try:
+            stmt = select([Customer.id,Customer.name,Customer.email,Position.position,Position.ref_score]).\
+                join(Position).\
+                    where(Customer.ref_link == refLink)
+            res  = connectedDB.execute(stmt).fetchone()
+            return res
+        except Exception as e:
+            print("getCusIdByRefLink : ",e)
+            return None    
+          
+    async def updateCouponCode(code,cusID,connectedDB)->bool:
+        try:
+            stmt = update(Customer).values({Customer.coupon:code}).where(Customer.id == cusID)
+            res = connectedDB.execute(stmt)
+            return True
+        
+        except Exception as e:
+            print("updateCouponCode : ",e)
+            return False
+        
+class PositionLogics():        
     #Return rows count of position table
     def getPositionCount(connectedDB)->(int,str):
         try:
@@ -97,3 +122,62 @@ class PositionLogics():
         except Exception as e:
             print("deletePositionByCustomerId : ",e)
             return -1,e
+    
+    async def rewardPositionForReferral(cusID,currPos,ref_score,connectedDB)->(bool,str):
+        try:
+            stmt = update(Position).values({Position.position:currPos-1,Position.ref_score:ref_score+1}).where(Position.customer_id==cusID)
+            res = connectedDB.execute(stmt)
+            return True,None
+        
+        except Exception as e:
+            print("rewardPositionForReferral : ",e)
+            return False,e
+
+
+class ReferralLogics():
+    async def insertReferral(refID,refById,connectedDB)->bool:
+         try:
+             ref = Referral(
+                 ref = refID,
+                 ref_by = refById
+             )
+             connectedDB.add(ref)
+             connectedDB.commit()
+             return True
+         except Exception as e:
+             print("insertReferral : ",e)
+             return False
+         
+    async def rewardReferrer(refLink,refID,connectedDB)->bool:
+        try:
+            refCus = await CustomerLogics.getCusByRefLink(refLink,connectedDB)
+            if refCus != None :
+                # insert the relation
+                await ReferralLogics.insertReferral(refID, refCus['id'], connectedDB)
+                
+                if refCus['position'] == 2 : # will be 1 after the reward
+                    coupon = randomString(50)
+                    #update the coupon code in customer table
+                    if not await CustomerLogics.updateCouponCode(coupon,refCus['id'] ,connectedDB):
+                        return False 
+                    await PositionLogics.deletePositionByCustomerId(refCus['id'], connectedDB) # no longer needed for position calculation
+                    await ReferralLogics.sendCoupon(refCus['name'],refCus['email'], coupon)
+                else:
+                    await PositionLogics.rewardPositionForReferral(refCus['id'],refCus['position'],refCus['ref_score'],connectedDB)
+            return True
+        except Exception as e:
+            print("rewardReferrer : ",e)
+            return False 
+    
+    async def sendCoupon(name,email,code)->bool:
+        try : 
+            if appConfig.CONNECT_MAIL:
+                content = email.returnCouponMail(name, code)
+                await email.sendEmail(email, content['subject'], content['message'])
+                return True
+            print('email connection not enabled')
+            print('email : ',email,' name : ',name, ' coupon : ',code)
+            return False
+        except Exception as e:
+            print("sendCoupon : ",e)
+            return False
