@@ -9,7 +9,7 @@
 
 ## Project setup : 
 1. Setup this repo locally
-1. Apply `ddl.txt` on MySQL
+2. Apply `ddl.txt` & `dml.txt` on MySQL
 2. `pip -r requirements.txt`
 3. Setup email connection in `config.json` [ to check the send email feature only ]
 4. Edit database connection details in `config.json`
