@@ -26,6 +26,10 @@ class AdminLogin(BaseModel):
     email : EmailStr
     password : str = Field(min_length=8)
 
+class CreateAdmin(BaseModel):
+    name  : str
+    email : EmailStr
+    password : str = Field(min_length=8)
 class UpdateUser(BaseModel):
     id    : int
     name  : Optional[str] 

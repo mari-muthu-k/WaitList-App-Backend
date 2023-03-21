@@ -8,8 +8,8 @@ from db import engine
 from fastapi.middleware.cors import CORSMiddleware
 from starlette_session import SessionMiddleware
 
-from controller import http
-from router import user,admin
+from controller import http,admin as adminController
+from router import user,admin,authAdmin
 from exception import customException
 
 app = FastAPI() if config.LIST_ENDPOINTS else FastAPI(openapi_url="")
@@ -37,8 +37,8 @@ app.add_middleware(
     )
 
 app.include_router(user.router,prefix="/api")
-# TODO : add admin auth dependency
 app.include_router(admin.router,prefix="/api/admin")
+app.include_router(authAdmin.router,prefix="/api/admin",dependencies=[Depends(adminController.AuthCheck)])
 
 @app.exception_handler(customException)
 async def exception_handler(request: Request, exc: customException):
