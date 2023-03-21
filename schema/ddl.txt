@@ -1,3 +1,115 @@
 -------------------------------------APPLY__ALL_THESE----------------------------------------------------------
 CREATE DATABASE iphone_waitlist;
 -------------------------------------APPLY__ONLY__IF__DBSCHEMA__FAILS----------------------------------------------
+CREATE TABLE `admin` (
+  `id` int NOT NULL,
+  `name` varchar(255) DEFAULT NULL,
+  `email` varchar(255) DEFAULT NULL,
+  `pwd` varchar(400) DEFAULT NULL
+);
+
+CREATE TABLE `customer` (
+  `id` int NOT NULL,
+  `name` varchar(255) DEFAULT NULL,
+  `email` varchar(255) DEFAULT NULL,
+  `ref_link` varchar(50) DEFAULT NULL,
+  `coupon` varchar(50) DEFAULT NULL,
+  `active` tinyint(1) DEFAULT NULL
+);
+
+CREATE TABLE `position` (
+  `id` int NOT NULL,
+  `customer_id` int DEFAULT NULL,
+  `position` int DEFAULT NULL,
+  `admin_priority` tinyint(1) DEFAULT NULL,
+  `ref_score` int DEFAULT NULL,
+  `created_at` datetime DEFAULT NULL
+);
+
+CREATE TABLE `referral` (
+  `id` int NOT NULL,
+  `ref` int DEFAULT NULL,
+  `ref_by` int DEFAULT NULL
+);
+
+--
+-- Indexes for dumped tables
+--
+
+--
+-- Indexes for table `admin`
+--
+ALTER TABLE `admin`
+  ADD PRIMARY KEY (`id`),
+  ADD KEY `ix_admin_id` (`id`);
+
+--
+-- Indexes for table `customer`
+--
+ALTER TABLE `customer`
+  ADD PRIMARY KEY (`id`),
+  ADD UNIQUE KEY `ref_link` (`ref_link`),
+  ADD UNIQUE KEY `coupon` (`coupon`),
+  ADD KEY `ix_customer_id` (`id`);
+
+--
+-- Indexes for table `position`
+--
+ALTER TABLE `position`
+  ADD PRIMARY KEY (`id`),
+  ADD KEY `customer_id` (`customer_id`),
+  ADD KEY `ix_position_id` (`id`);
+
+--
+-- Indexes for table `referral`
+--
+ALTER TABLE `referral`
+  ADD PRIMARY KEY (`id`),
+  ADD KEY `ref` (`ref`),
+  ADD KEY `ref_by` (`ref_by`),
+  ADD KEY `ix_referral_id` (`id`);
+
+--
+-- AUTO_INCREMENT for dumped tables
+--
+
+--
+-- AUTO_INCREMENT for table `admin`
+--
+ALTER TABLE `admin`
+  MODIFY `id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
+
+--
+-- AUTO_INCREMENT for table `customer`
+--
+ALTER TABLE `customer`
+  MODIFY `id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
+
+--
+-- AUTO_INCREMENT for table `position`
+--
+ALTER TABLE `position`
+  MODIFY `id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
+
+--
+-- AUTO_INCREMENT for table `referral`
+--
+ALTER TABLE `referral`
+  MODIFY `id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
+
+--
+-- Constraints for dumped tables
+--
+
+--
+-- Constraints for table `position`
+--
+ALTER TABLE `position`
+  ADD CONSTRAINT `position_ibfk_1` FOREIGN KEY (`customer_id`) REFERENCES `customer` (`id`);
+
+--
+-- Constraints for table `referral`
+--
+ALTER TABLE `referral`
+  ADD CONSTRAINT `referral_ibfk_1` FOREIGN KEY (`ref`) REFERENCES `customer` (`id`),
+  ADD CONSTRAINT `referral_ibfk_2` FOREIGN KEY (`ref_by`) REFERENCES `customer` (`id`);

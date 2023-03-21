@@ -1,0 +1,53 @@
+--
+-- Dumping data for table `admin`
+--
+
+INSERT INTO `admin` (`id`, `name`, `email`, `pwd`) VALUES
+(1, 'Super admin', 'admin@gmail.com', '$pbkdf2-sha256$29000$N4ZQ6v0f4zxHyHnP2RvDuA$i60SKQ9Rg4dmlOP9N2mZORk/YJdZnJTJXRFJiQgNg1o');
+
+-- --------------------------------------------------------
+--
+-- Dumping data for table `customer`
+--
+
+INSERT INTO `customer` (`id`, `name`, `email`, `ref_link`, `coupon`, `active`) VALUES
+(1, 'User 1', 'user1@gmail.com', 'flUrMiMmQrbSIFAcTSoEFwsgxNdmElQIyBebZNjRcPGEWSiOaj', NULL, 1),
+(2, 'User 2', 'user2@gmail.com', 'EreqmcIsqCjoZdALcOBJsVhmsQyZjeoVepceGkWlJKzauIUtQA', NULL, 1),
+(3, 'User 3', 'user3@gmail.com', 'PDkbXIyOeSjkJJxHrjjQpxoRmucdsQbTBfAlnlshcpdSWAbvZc', NULL, 1),
+(4, 'User 4', 'user4@gmail.com', 'PrhRNXONbbqaJhKJNtBwtahwCjwYyBukNZurvVBzVywAtvIzwb', NULL, 1),
+(5, 'User 5', 'user5@gmail.com', 'gjfDZxapKLmeklcPNJDSiwKIOgBjDhJiXCCEUPcIzadlRfPaFG', NULL, 1),
+(6, 'User 6', 'user6@gmail.com', 'acMyyWNCCsvsRQpTlZZbzbCUxnbZXZhoTOZcRHPUGLhiDvnDJY', NULL, 1),
+(7, 'User 7', 'user7@gmail.com', 'AyVPLAknOCkpKvYPuodytfAPJxBHSIfqyzXqNlAUjRtbkAgNsK', NULL, 1),
+(8, 'User 8', 'user8@gmail.com', 'kqgZlPfcHFSpdEUtsOQWQJkhVHVOoqdJnZmqTFaOufiJXkPohX', NULL, 1),
+(9, 'User 9', 'user9@gmail.com', 'kCMvrQIqoXdatVALptvkSCgZhWXHQSmsSphJygpvsRzqSMqwUB', NULL, 1),
+(10, 'User 10', 'user10@gmail.com', 'XDyBUFMDrgTmkwjsXzvovzjipPoJjDczxXHwRiKsfjtleKQGrt', NULL, 1);
+
+-- --------------------------------------------------------
+--
+-- Dumping data for table `position`
+--
+
+INSERT INTO `position` (`id`, `customer_id`, `position`, `admin_priority`, `ref_score`, `created_at`) VALUES
+(1, 1, 97, 0, 2, '2023-03-21 15:22:22'),
+(2, 2, 100, 0, 0, '2023-03-21 15:22:22'),
+(3, 3, 101, 0, 0, '2023-03-21 15:22:22'),
+(4, 4, 100, 0, 2, '2023-03-21 15:22:22'),
+(5, 5, 103, 0, 0, '2023-03-21 15:22:22'),
+(6, 6, 102, 0, 2, '2023-03-21 15:22:22'),
+(7, 7, 105, 0, 0, '2023-03-21 15:22:22'),
+(8, 8, 106, 0, 0, '2023-03-21 15:22:22'),
+(9, 9, 107, 0, 0, '2023-03-21 15:22:22'),
+(10, 10, 108, 0, 0, '2023-03-21 15:22:22');
+
+-- --------------------------------------------------------
+--
+-- Dumping data for table `referral`
+--
+
+INSERT INTO `referral` (`id`, `ref`, `ref_by`) VALUES
+(1, 5, 4),
+(2, 6, 4),
+(3, 7, 6),
+(4, 8, 6),
+(5, 9, 1),
+(6, 10, 1);
