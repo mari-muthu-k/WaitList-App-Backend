@@ -87,7 +87,7 @@ class CustomerLogics():
         try:
             stmt = select([Customer.id,Customer.name,Customer.email,Position.position,Position.ref_score]).\
                 join(Position).\
-                    where(Customer.ref_link == refLink)
+                    where(Customer.ref_link == refLink and Customer.active == 1)
             res  = connectedDB.execute(stmt).fetchone()
             return res
         except Exception as e:
@@ -96,7 +96,7 @@ class CustomerLogics():
     
     async def getAllUsers(connectedDB):
         try:
-            stmt = select([Customer.name,Customer.email,Customer.coupon,Customer.ref_link,Position.id.label('pos_id'),Position.admin_priority,Position.ref_score,Position.position]).\
+            stmt = select([Customer.id,Customer.name,Customer.email,Customer.coupon,Customer.ref_link,Position.id.label('pos_id'),Position.admin_priority,Position.ref_score,Position.position]).\
                 join(Position).\
                     where(Customer.active == 1).\
                         order_by(Position.position,Position.admin_priority.desc(),Position.ref_score.desc(),Position.id)
@@ -168,6 +168,7 @@ class PositionLogics():
         try:
             stmt = delete(Position).where(Position.customer_id == cusID)
             res = connectedDB.execute(stmt)
+            connectedDB.commit()
             return res.rowcount,None
         except Exception as e:
             print("deletePositionByCustomerId : ",e)
