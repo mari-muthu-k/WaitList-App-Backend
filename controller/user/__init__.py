@@ -56,8 +56,8 @@ class CustomerLogics():
     async def getUserData(email,connectedDB)->(dict,bool):
         try:
             stmt = select([Customer.name,Customer.coupon,Customer.ref_link,Position.id.label('pos_id'),Position.position,Position.admin_priority]).\
-                join(Position).\
-                    where(Customer.email==email)
+                join(Position,isouter=True).\
+                    where(Customer.email==email and Customer.active == 1)
    
             result = connectedDB.execute(stmt).fetchone()
             return result,True
@@ -103,6 +103,19 @@ class CustomerLogics():
         except Exception as e:
             print("updateCouponCode : ",e)
             return False
+    
+    async def getAllUsers(connectedDB):
+        try:
+            stmt = select([Customer.name,Customer.email,Customer.coupon,Customer.ref_link,Position.id.label('pos_id'),Position.admin_priority,Position.ref_score,Position.position]).\
+                join(Position).\
+                    where(Customer.active == 1).\
+                        order_by(Position.position,Position.admin_priority.desc(),Position.ref_score.desc(),Position.id)
+            res = connectedDB.execute(stmt).fetchall()
+            return res
+        
+        except Exception as e:
+            print("getAllUsers : ",e)
+            return None
         
 class PositionLogics():        
     #Return rows count of position table
@@ -181,3 +194,5 @@ class ReferralLogics():
         except Exception as e:
             print("sendCoupon : ",e)
             return False
+        
+        

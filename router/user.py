@@ -22,7 +22,7 @@ async def myStatus(req:Request,res:Response,reqData:MyStatusSchema,connectedDB:S
     resultData,status = await CustomerLogics.getUserData(reqData.email,connectedDB)
     if status:
         if resultData == None:
-            return HTTP_RESPONSE(statusCode=404).returnErrorMessage(response, "email doesn't exist")
+            return HTTP_RESPONSE(statusCode=404).returnErrorMessage(res, "email doesn't exist")
         else:
             return HTTP_RESPONSE(statusCode=200).returnCustomMessage(res,{
             "data" : resultData

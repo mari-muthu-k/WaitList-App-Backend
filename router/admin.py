@@ -17,12 +17,36 @@ async def login(req:Request,res:Response,loginData:formSchema.AdminLogin,connect
         if status :
             return HTTP_RESPONSE(statusCode=200).returnMessage(res)
         else:
-            return HTTP_RESPONSE(statusCode=401).returnCustomMessage(res,"wrong email or password")
-    return HTTP_RESPONSE(statusCode=200).returnMessage(res) if status else HTTP_RESPONSE(statusCode=500).returnCustomMessage(res,"something went wrong, please try again")
+            return HTTP_RESPONSE(statusCode=401).returnErrorMessage(res,"wrong email or password")
+    return HTTP_RESPONSE(statusCode=200).returnMessage(res) if status else HTTP_RESPONSE(statusCode=500).returnErrorMessage(res,"something went wrong, please try again")
 
 @router.post("/listAll")
-async def listAll(req:Request,res:Response):
-    return True
+async def listAll(req:Request,res:Response,connectedDB:Session = Depends(get_db)):
+    posList = await CustomerLogics.getAllUsers(connectedDB)
+    
+    if posList != None:
+        nPosList = []
+        #Remove Position collision using Linear probing
+        positions = {}
+        #Recursive function to find the available slot
+        def findSlot(d,val):
+            if val not in d:
+                d[val] = 1
+                return val
+            else:
+                nval = val+d[val]
+                d[val] += 1
+                return findSlot(d,nval)
+
+        for i in posList:
+            nI = findSlot(positions,i['position'])
+            rowDict = dict(i._mapping)
+            rowDict['position'] = nI
+            nPosList.append(rowDict)
+            
+    return HTTP_RESPONSE(statusCode=200).returnCustomMessage(res,{
+        "data":nPosList
+    })
 
 # @router.post("/getUser")
 # async def getUser(req:Request,res:Response,reqData:formSchema.MyStatus,connectedDB:Session=Depends(get_db)):
