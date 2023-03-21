@@ -27,6 +27,7 @@ class AdminLogin(BaseModel):
     password : str = Field(min_length=8)
 
 class UpdateUser(BaseModel):
+    id    : int
     name  : Optional[str] 
     email : Optional[EmailStr ]
     position : Optional[int]

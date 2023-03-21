@@ -93,16 +93,6 @@ class CustomerLogics():
         except Exception as e:
             print("getCusIdByRefLink : ",e)
             return None    
-          
-    async def updateCouponCode(code,cusID,connectedDB)->bool:
-        try:
-            stmt = update(Customer).values({Customer.coupon:code}).where(Customer.id == cusID)
-            res = connectedDB.execute(stmt)
-            return True
-        
-        except Exception as e:
-            print("updateCouponCode : ",e)
-            return False
     
     async def getAllUsers(connectedDB):
         try:
@@ -116,6 +106,53 @@ class CustomerLogics():
         except Exception as e:
             print("getAllUsers : ",e)
             return None
+    
+    async def updateCouponCode(code,cusID,connectedDB)->bool:
+        try:
+            stmt = update(Customer).values({Customer.coupon:code}).where(Customer.id == cusID)
+            res = connectedDB.execute(stmt)
+            return True
+        
+        except Exception as e:
+            print("updateCouponCode : ",e)
+            return False
+    
+    async def updateUserData(userData,connectedDB):
+        try:
+            updateAbleFields = {
+                'name':Customer.name,
+                'email' : Customer.email,
+                }
+            
+            nV = {}
+            for i in userData.keys():
+                if i in updateAbleFields and userData[i] != None:
+                    nV[updateAbleFields[i]] = userData[i]
+            
+            if 'email' in userData and userData['email'] != None:
+                if CustomerLogics.isEmailExist(userData['email'], connectedDB):
+                    return -1
+
+            if 'position' in userData and userData['position'] != None:
+                if len(nV.keys()) > 0:
+                    cusStmt = update(Customer).values(nV).\
+                        where(Customer.id == userData['id'] and Customer.active == 1 )
+                    cusRow = connectedDB.execute(cusStmt)
+                    if cusRow == 0:
+                        return 0
+
+                posStmt = update(Position).values({Position.position:userData['position'],Position.admin_priority:True}).\
+                           where(Position.customer_id == userData['id'])
+                res = connectedDB.execute(posStmt)
+            else:
+                stmt = update(Customer).values(nV).where(Customer.id == userData['id'] and Customer.active == 1)
+                res = connectedDB.execute(stmt)
+            connectedDB.commit()
+            return res.rowcount
+        
+        except Exception as e:
+            print("updateUserData : ",e)
+            return 0
         
 class PositionLogics():        
     #Return rows count of position table

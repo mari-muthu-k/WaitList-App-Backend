@@ -48,23 +48,17 @@ async def listAll(req:Request,res:Response,connectedDB:Session = Depends(get_db)
         "data":nPosList
     })
 
-# @router.post("/getUser")
-# async def getUser(req:Request,res:Response,reqData:formSchema.MyStatus,connectedDB:Session=Depends(get_db)):
-#     resultData,status = await CustomerLogics.getUserData(reqData.email,connectedDB)
-#     if status:
-#         if resultData == None:
-#             return HTTP_RESPONSE(statusCode=404).returnCustomMessage(res,{
-#             "data" : "email doesn't exist"
-#             })
-#         else:
-#             return HTTP_RESPONSE(statusCode=200).returnCustomMessage(res,{
-#             "data" : resultData
-#             })
-#     return HTTP_RESPONSE(statusCode=500).returnCustomMessage(res,"Something went wrong")
-
 @router.post("/updateUser")
-async def updateUser(req:Request,res:Response):
-    return True
+async def updateUser(req:Request,res:Response,reqData:formSchema.UpdateUser,connectedDB:Session = Depends(get_db)):
+    reqData = reqData.dict()
+    rowAffected = await CustomerLogics.updateUserData(reqData, connectedDB)
+
+    if rowAffected == 0 :
+        return HTTP_RESPONSE(statusCode=404).returnErrorMessage(res,"id doesn't exist")
+    elif rowAffected == -1:
+        return HTTP_RESPONSE(statusCode=409).returnErrorMessage(res, "email already exist")
+    
+    return HTTP_RESPONSE(statusCode=200).returnMessage(res)
 
 @router.delete("/deleteUser")
 async def deleteUser(req:Request,res:Response,delData:formSchema.DeleteUser,connectedDB:Session = Depends(get_db)):
